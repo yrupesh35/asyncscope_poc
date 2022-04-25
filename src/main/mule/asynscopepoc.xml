@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="08b570fb-bbdb-49c6-80be-ee1888c6d3d8" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="adf20f3e-0a26-4f15-a852-d1a396d5922e" >
+		<file:connection workingDir="C:\file" />
+	</file:config>
+	<flow name="asynscopepocFlow" doc:id="f52a30a1-4556-40a7-9e08-b324471f6e5d" >
+		<http:listener doc:name="Listener" doc:id="ff7bb5ec-92af-4551-a462-1ffa8a13c3f2" config-ref="HTTP_Listener_config" path="/async"/>
+		<logger level="INFO" doc:name="Logger" doc:id="4624f4f7-6d59-4b1d-9849-bb413c793018" message="logger outside async scope"/>
+		<set-payload value="sample payload" doc:name="Set Payload" doc:id="e59b6d7e-5148-4525-b097-2d2bbaeb37bc" />
+		<async doc:name="Async" doc:id="5af1d337-8e96-45d0-a2c7-bd5ea56bef55" >
+			<file:write doc:name="Write" doc:id="ecaa7f1e-8144-41ca-98de-a2b07c977abf" config-ref="File_Config" path="C:\file\test.txt"/>
+			<logger level="INFO" doc:name="Logger" doc:id="d94165c1-6f6a-4428-8b0f-8f73651c1c1b" message="logger inside async scope"/>
+		</async>
+		<logger level="INFO" doc:name="Logger" doc:id="698522a5-cdd4-4e11-a550-78a9dfb4f5a5" message="Done"/>
+	</flow>
+</mule>
